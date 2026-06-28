@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import CTAButton from "./CTAButton.jsx";
 
+const logoImage = "/images/nam-bean-logo.png";
+
 const navItems = [
   ["Giới thiệu", "#about"],
   ["Chuyên môn", "#expertise"],
@@ -12,10 +14,12 @@ const navItems = [
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
+      setIsMobileMenuOpen(false);
     };
 
     handleScroll();
@@ -39,9 +43,11 @@ export default function Header() {
         }`}
       >
         <a href="#hero" className="flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-md border border-lime-300/50 bg-lime-300 text-sm font-black text-zinc-950">
-            NB
-          </span>
+          <img
+            className="size-11 rounded-md border border-lime-300/35 bg-zinc-950 object-contain p-1 shadow-[0_0_24px_rgba(190,242,100,0.12)]"
+            src={logoImage}
+            alt="Nam Bean logo"
+          />
           <span>
             <span className="block text-sm font-black uppercase tracking-wide text-white">
               Nam Bean
@@ -70,10 +76,59 @@ export default function Header() {
         <a
           className="text-sm font-bold text-lime-200 sm:hidden"
           href="#contact"
+          onClick={() => setIsMobileMenuOpen(false)}
         >
           Tư vấn
         </a>
+        <button
+          className="grid size-11 place-items-center rounded-md border border-white/10 bg-white/[0.04] text-lime-200 transition hover:border-lime-300/50 hover:bg-lime-300/10 lg:hidden"
+          type="button"
+          aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="mobile-navigation"
+          onClick={() => setIsMobileMenuOpen((isOpen) => !isOpen)}
+        >
+          <span className="grid gap-1.5">
+            <span
+              className={`block h-0.5 w-5 rounded-full bg-current transition ${
+                isMobileMenuOpen ? "translate-y-2 rotate-45" : ""
+              }`}
+            />
+            <span
+              className={`block h-0.5 w-5 rounded-full bg-current transition ${
+                isMobileMenuOpen ? "opacity-0" : ""
+              }`}
+            />
+            <span
+              className={`block h-0.5 w-5 rounded-full bg-current transition ${
+                isMobileMenuOpen ? "-translate-y-2 -rotate-45" : ""
+              }`}
+            />
+          </span>
+        </button>
       </div>
+
+      <nav
+        id="mobile-navigation"
+        className={`mx-auto mt-2 w-[calc(100%-32px)] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/95 shadow-[0_20px_70px_rgba(0,0,0,0.42)] backdrop-blur-xl transition-all duration-300 lg:hidden ${
+          isMobileMenuOpen
+            ? "max-h-96 translate-y-0 opacity-100"
+            : "pointer-events-none max-h-0 -translate-y-2 opacity-0"
+        }`}
+      >
+        <div className="grid gap-1 p-2">
+          {navItems.map(([label, href]) => (
+            <a
+              key={href}
+              className="rounded-lg px-4 py-3 text-sm font-bold text-zinc-200 transition hover:bg-lime-300/10 hover:text-lime-200"
+              href={href}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+      </nav>
     </header>
   );
 }

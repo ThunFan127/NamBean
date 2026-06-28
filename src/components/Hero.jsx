@@ -8,7 +8,7 @@ export default function Hero() {
       id="hero"
       className="fitness-grid overflow-hidden border-b border-white/10"
     >
-      <div className="section-shell grid min-h-[calc(100vh-64px)] items-center gap-12 py-12 sm:py-16 lg:grid-cols-[0.92fr_1.08fr] lg:gap-14">
+      <div className="section-shell grid min-h-screen items-center gap-12 pb-12 pt-28 sm:pb-16 sm:pt-32 lg:grid-cols-[0.92fr_1.08fr] lg:gap-14">
         <div className="reveal max-w-2xl">
           <p className="mb-4 inline-flex rounded-md border border-lime-300/30 bg-lime-300/10 px-3 py-2 text-xs font-bold uppercase tracking-[0.22em] text-lime-200">
             Đậu Văn Nam

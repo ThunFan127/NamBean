@@ -131,7 +131,7 @@ function TransformationImage({ label, src, highlight = false }) {
 function TransformationLightbox({ item, isVisible, onClose }) {
   return (
     <div
-      className={`fixed inset-0 z-[999] flex items-center justify-center px-4 py-6 transition duration-200 ${
+      className={`fixed inset-0 z-[999] flex items-start justify-center overflow-y-auto px-4 py-16 transition duration-200 sm:items-center sm:py-6 ${
         isVisible
           ? "bg-black/45 backdrop-blur-[2px]"
           : "bg-black/0 backdrop-blur-0"
@@ -151,10 +151,12 @@ function TransformationLightbox({ item, isVisible, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="absolute -right-3 -top-3 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-zinc-950/90 text-xl font-bold leading-none text-white shadow-xl backdrop-blur transition hover:border-lime-300/60 hover:bg-lime-300 hover:text-zinc-950"
+          className="fixed right-4 top-4 z-20 grid size-11 place-items-center rounded-full border border-white/20 bg-zinc-950/75 text-2xl font-light leading-none text-zinc-100 shadow-[0_16px_45px_rgba(0,0,0,0.35)] backdrop-blur-md transition hover:border-lime-300/60 hover:bg-lime-300 hover:text-zinc-950 sm:absolute sm:-right-3 sm:-top-3 sm:size-10"
           aria-label="Đóng"
         >
-          ×
+          <span className="-mt-0.5" aria-hidden="true">
+            ×
+          </span>
         </button>
 
         <div className="overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/90 shadow-[0_24px_90px_rgba(0,0,0,0.45)]">
@@ -175,7 +177,7 @@ function TransformationLightbox({ item, isVisible, onClose }) {
 function LightboxImage({ label, src, highlight = false }) {
   return (
     <figure className="relative bg-black">
-      <div className="aspect-[4/5] max-h-[72vh] overflow-hidden bg-zinc-950 md:aspect-[3/4]">
+      <div className="aspect-[4/5] max-h-[62vh] overflow-hidden bg-zinc-950 sm:max-h-[72vh] md:aspect-[3/4]">
         <img
           src={src}
           alt={`${label} transformation enlarged`}

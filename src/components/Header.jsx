@@ -14,12 +14,46 @@ const navItems = [
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    let isTicking = false;
+    let lastScrollY = window.scrollY;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
-      setIsMobileMenuOpen(false);
+      if (isTicking) return;
+
+      isTicking = true;
+
+      requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        const scrollDelta = currentScrollY - lastScrollY;
+        const shouldBeScrolled = currentScrollY > 56;
+        const isMobileViewport = window.innerWidth < 1024;
+
+        setIsScrolled((currentValue) =>
+          currentValue === shouldBeScrolled ? currentValue : shouldBeScrolled,
+        );
+
+        setIsHeaderHidden((currentValue) => {
+          const shouldHide =
+            isMobileViewport && currentScrollY > 96 && scrollDelta > 8;
+          const shouldShow =
+            !isMobileViewport || currentScrollY < 48 || scrollDelta < -6;
+
+          if (shouldHide) return true;
+          if (shouldShow) return false;
+          return currentValue;
+        });
+
+        if (shouldBeScrolled) {
+          setIsMobileMenuOpen((isOpen) => (isOpen ? false : isOpen));
+        }
+
+        lastScrollY = currentScrollY;
+        isTicking = false;
+      });
     };
 
     handleScroll();
@@ -29,17 +63,22 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed left-0 top-0 z-50 w-full transition-all duration-300 ease-out ${
-        isScrolled
-          ? "border-transparent bg-transparent px-4 pt-3"
-          : "border-b border-white/10 bg-zinc-950/95 px-0 pt-0"
+      className={`fixed left-0 top-0 z-50 w-full transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:translate-y-0 ${
+        isHeaderHidden ? "-translate-y-full" : "translate-y-0"
       }`}
     >
       <div
-        className={`mx-auto flex items-center justify-between gap-4 transition-all duration-300 ease-out ${
+        className={`pointer-events-none absolute inset-x-0 top-0 h-[72px] border-b border-white/10 bg-zinc-950/95 backdrop-blur-sm transition duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           isScrolled
-            ? "max-w-5xl rounded-full border border-white/10 bg-zinc-950/80 px-5 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl"
-            : "section-shell rounded-none border border-transparent py-3"
+            ? "-translate-y-3 opacity-0"
+            : "translate-y-0 opacity-100"
+        }`}
+      />
+      <div
+        className={`relative mx-auto flex w-[calc(100%-32px)] items-center justify-between gap-4 border py-3 transition-[max-width,margin-top,border-radius,background-color,border-color,box-shadow,backdrop-filter,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          isScrolled
+            ? "mt-3 max-w-5xl translate-y-0 rounded-full border-white/10 bg-zinc-950/80 px-5 shadow-[0_18px_60px_rgba(0,0,0,0.34)] backdrop-blur-xl"
+            : "mt-0 max-w-[1120px] translate-y-0 rounded-none border-transparent bg-transparent px-0 shadow-none backdrop-blur-0"
         }`}
       >
         <a href="#hero" className="flex items-center gap-3">
@@ -86,7 +125,10 @@ export default function Header() {
           aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMobileMenuOpen}
           aria-controls="mobile-navigation"
-          onClick={() => setIsMobileMenuOpen((isOpen) => !isOpen)}
+          onClick={() => {
+            setIsHeaderHidden(false);
+            setIsMobileMenuOpen((isOpen) => !isOpen);
+          }}
         >
           <span className="grid gap-1.5">
             <span
